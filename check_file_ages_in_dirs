@@ -216,22 +216,22 @@ if [ ! "$dirs" ]; then
   exit "$STATE_UNKNOWN"
 fi
 
-if [ "$(echo "$warning" | grep "[^0-9]")" ] || [ ! "$warning" ]; then
+if  echo "$warning" | grep -q "[^0-9]"  ; then
   echo "Warning value must be a number."
   exit "$STATE_UNKNOWN"
 fi
 
-if [ "$(echo "$critical" | grep "[^0-9]")" ] || [ ! "$critical" ]; then
+if  echo "$critical" | grep -q "[^0-9]"  ; then
   echo "Critical value must be a number."
   exit "$STATE_UNKNOWN"
 fi
 
-if [ "$num_warning" != "0" ] && [ "$(echo "$num_warning" | grep "[^0-9]")" ]; then
+if  echo "$num_warning" | grep -q "[^0-9]"  ; then
   echo "Warning value for number of files must be a number."
   exit "$STATE_UNKNOWN"
 fi
 
-if [ "$num_critical" != "0" ] && [ "$(echo "$num_critical" | grep "[^0-9]")" ]; then
+if  echo "$num_critical" | grep -q "[^0-9]"  ; then
   echo "Critical value for number of files must be a number."
   exit "$STATE_UNKNOWN"
 fi
