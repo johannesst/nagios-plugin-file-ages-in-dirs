@@ -216,27 +216,27 @@ if [ ! "$dirs" ]; then
   exit "$STATE_UNKNOWN"
 fi
 
-if [ `echo "$warning" | grep "[^0-9]"` ] || [ ! "$warning" ]; then
+if [ $(echo "$warning" | grep "[^0-9]") ] || [ ! "$warning" ]; then
   echo "Warning value must be a number."
   exit "$STATE_UNKNOWN"
 fi
 
-if [ `echo "$critical" | grep "[^0-9]"` ] || [ ! "$critical" ]; then
+if [ $(echo "$critical" | grep "[^0-9]") ] || [ ! "$critical" ]; then
   echo "Critical value must be a number."
   exit "$STATE_UNKNOWN"
 fi
 
-if [ "$num_warning" != "0" ] && [ `echo "$num_warning" | grep "[^0-9]"` ]; then
+if [ "$num_warning" != "0" ] && [ $(echo "$num_warning" | grep "[^0-9]") ]; then
   echo "Warning value for number of files must be a number."
   exit "$STATE_UNKNOWN"
 fi
 
-if [ "$num_critical" != "0" ] && [ `echo "$num_critical" | grep "[^0-9]"` ]; then
+if [ "$num_critical" != "0" ] && [ $(echo "$num_critical" | grep "[^0-9]") ]; then
   echo "Critical value for number of files must be a number."
   exit "$STATE_UNKNOWN"
 fi
 
-if [ ! `echo "$time_unit" | grep "seconds\|minutes\|hours\|days"` ]; then
+if [ ! $(echo "$time_unit" | grep "seconds\|minutes\|hours\|days") ]; then
   echo "Time unit must be one of: seconds, minutes, hours, days."
   exit "$STATE_UNKNOWN"
 fi
@@ -279,8 +279,8 @@ esac
 # Starting values.
 DIR_COUNT=0
 OUTPUT=
-CURRENT_TIME=`date +%s`
-OS_DISTRO=`uname -s`
+CURRENT_TIME=$(date +%s)
+OS_DISTRO=$(uname -s)
 
 # Build type list.
 file_types="-type f"
@@ -310,15 +310,15 @@ do
   # Check if dir exists.
   full_path=${base_dir}${dir}
   if [ -d "$full_path" ]; then
-    file_list=`eval "find $full_path -mindepth 1 -maxdepth 1 $file_types $ignore | sort"`
+    file_list=$(eval "find $full_path -mindepth 1 -maxdepth 1 $file_types $ignore | sort")
     # Cycle through files, looking for checkable files.
     for next_filepath in $file_list
     do
-      next_file=`basename "$next_filepath"`
+      next_file=$(basename "$next_filepath")
       # stat doesn't work the same on Linux/Solaris vs. FreeBSD/Darwin, so
       # make adjustments here.
       if [ "$OS_DISTRO" = "Linux" ] || [ "$OS_DISTRO" = "SunOS" ]; then
-        st_ctime=`stat -c%Y ${next_filepath}`
+        st_ctime=$(stat -c%Y ${next_filepath})
       else
         eval $(stat -s ${next_filepath})
       fi
