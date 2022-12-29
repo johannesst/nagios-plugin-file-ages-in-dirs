@@ -216,27 +216,27 @@ if [ ! "$dirs" ]; then
   exit "$STATE_UNKNOWN"
 fi
 
-if [ $(echo "$warning" | grep "[^0-9]") ] || [ ! "$warning" ]; then
+if [ "$(echo "$warning" | grep "[^0-9]")" ] || [ ! "$warning" ]; then
   echo "Warning value must be a number."
   exit "$STATE_UNKNOWN"
 fi
 
-if [ $(echo "$critical" | grep "[^0-9]") ] || [ ! "$critical" ]; then
+if [ "$(echo "$critical" | grep "[^0-9]")" ] || [ ! "$critical" ]; then
   echo "Critical value must be a number."
   exit "$STATE_UNKNOWN"
 fi
 
-if [ "$num_warning" != "0" ] && [ $(echo "$num_warning" | grep "[^0-9]") ]; then
+if [ "$num_warning" != "0" ] && [ "$(echo "$num_warning" | grep "[^0-9]")" ]; then
   echo "Warning value for number of files must be a number."
   exit "$STATE_UNKNOWN"
 fi
 
-if [ "$num_critical" != "0" ] && [ $(echo "$num_critical" | grep "[^0-9]") ]; then
+if [ "$num_critical" != "0" ] && [ "$(echo "$num_critical" | grep "[^0-9]")" ]; then
   echo "Critical value for number of files must be a number."
   exit "$STATE_UNKNOWN"
 fi
 
-if [ ! $(echo "$time_unit" | grep "seconds\|minutes\|hours\|days") ]; then
+if [ ! "$(echo "$time_unit" | grep "seconds\|minutes\|hours\|days")" ]; then
   echo "Time unit must be one of: seconds, minutes, hours, days."
   exit "$STATE_UNKNOWN"
 fi
@@ -321,7 +321,7 @@ do
       if [ "$OS_DISTRO" = "Linux" ] || [ "$OS_DISTRO" = "SunOS" ]; then
         st_ctime=$(stat -c%Y "${next_filepath}")
       else
-        eval $(stat -s "${next_filepath}")
+        eval "$(stat -s "${next_filepath}")"
       fi
       FILE_COUNT=$((FILE_COUNT + 1))
       FILE_AGE=$((CURRENT_TIME - st_ctime))
