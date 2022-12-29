@@ -319,9 +319,9 @@ do
       # stat doesn't work the same on Linux/Solaris vs. FreeBSD/Darwin, so
       # make adjustments here.
       if [ "$OS_DISTRO" = "Linux" ] || [ "$OS_DISTRO" = "SunOS" ]; then
-        st_ctime=$(stat -c%Y ${next_filepath})
+        st_ctime=$(stat -c%Y "${next_filepath}")
       else
-        eval $(stat -s ${next_filepath})
+        eval $(stat -s "${next_filepath}")
       fi
       FILE_COUNT=$((FILE_COUNT + 1))
       FILE_AGE=$((CURRENT_TIME - st_ctime))
