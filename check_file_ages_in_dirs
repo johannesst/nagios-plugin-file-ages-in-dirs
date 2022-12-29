@@ -305,7 +305,8 @@ do
   FILES_OK=0
   FILES_WARN=0
   FILES_CRITICAL=0
-  DIR_COUNT=$(($DIR_COUNT + 1))
+  DIR_COUNT=$((DIR_COUNT + 1))
+  #DIR_COUNT=$(($DIR_COUNT + 1))
 
   # Check if dir exists.
   full_path=${base_dir}${dir}
@@ -322,21 +323,21 @@ do
       else
         eval $(stat -s ${next_filepath})
       fi
-      FILE_COUNT=$(($FILE_COUNT + 1))
-      FILE_AGE=$(($CURRENT_TIME - $st_ctime))
-      FILE_AGE_UNITS=$(($FILE_AGE / $multiplier))
-      MAX_WARN_AGE=$(($warning * $multiplier))
-      MAX_CRIT_AGE=$(($critical * $multiplier))
+      FILE_COUNT=$((FILE_COUNT + 1))
+      FILE_AGE=$((CURRENT_TIME - st_ctime))
+      FILE_AGE_UNITS=$((FILE_AGE / multiplier))
+      MAX_WARN_AGE=$((warning * multiplier))
+      MAX_CRIT_AGE=$((critical * multiplier))
       if [ $FILE_AGE -gt $MAX_CRIT_AGE ]; then
-        FILES_CRITICAL=$(($FILES_CRITICAL + 1))
+        FILES_CRITICAL=$((FILES_CRITICAL + 1))
         OUTPUT="$OUTPUT ${dir}/${next_file}: ${FILE_AGE_UNITS}${abbreviation}"
         set_exit_status "$STATE_CRITICAL"
       elif [ $FILE_AGE -gt $MAX_WARN_AGE ]; then
-        FILES_WARN=$(($FILES_WARN + 1))
+        FILES_WARN=$((FILES_WARN + 1))
         OUTPUT="$OUTPUT ${dir}/${next_file}: ${FILE_AGE_UNITS}${abbreviation}"
         set_exit_status "$STATE_WARNING"
       else
-        FILES_OK=$(($FILES_OK + 1))
+        FILES_OK=$((FILES_OK + 1))
         if [ "$verbose" == "1" ]; then
           OUTPUT="$OUTPUT ${dir}/${next_file}: ${FILE_AGE_UNITS}${abbreviation}"
         fi
