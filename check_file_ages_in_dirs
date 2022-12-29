@@ -2,11 +2,12 @@
 #
 # File ages in a directory plugin for Nagios.
 # Written by Chad Phillips (chad@apartmentlines.com)
-# Last Modified: 2016-07-13
+# Last Modified: 2022-12-29
 
-PROGPATH=`dirname $0`
+PROGPATH=$(dirname "$0")
 
-. $PROGPATH/utils.sh
+#shellcheck source="$PROGPATH"/util.sh
+. "$PROGPATH"/utils.sh
 
 print_usage() {
     echo "
@@ -121,11 +122,11 @@ set_exit_status() {
 # arguments have been supplied
 if [ $# -lt 1 ]; then
   print_usage
-  exit $STATE_UNKNOWN
+  exit "$STATE_UNKNOWN"
 fi
 
 # Defaults.
-exitstatus=$STATE_OK
+exitstatus="$STATE_OK"
 warning=26
 critical=52
 time_unit=hours
@@ -142,11 +143,11 @@ while test -n "$1"; do
   case "$1" in
     --help)
       print_help
-      exit $STATE_OK
+      exit "$STATE_OK"
       ;;
     -h)
       print_help
-      exit $STATE_OK
+      exit "$STATE_OK"
       ;;
     --dirs)
       dirs=$2
@@ -204,7 +205,7 @@ while test -n "$1"; do
     *)
       echo "Unknown argument: $1"
       print_usage
-      exit $STATE_UNKNOWN
+      exit "$STATE_UNKNOWN"
       ;;
   esac
   shift
@@ -212,47 +213,47 @@ done
 
 if [ ! "$dirs" ]; then
   echo "No directories provided."
-  exit $STATE_UNKNOWN
+  exit "$STATE_UNKNOWN"
 fi
 
 if [ `echo "$warning" | grep [^0-9]` ] || [ ! "$warning" ]; then
   echo "Warning value must be a number."
-  exit $STATE_UNKNOWN
+  exit "$STATE_UNKNOWN"
 fi
 
 if [ `echo "$critical" | grep [^0-9]` ] || [ ! "$critical" ]; then
   echo "Critical value must be a number."
-  exit $STATE_UNKNOWN
+  exit "$STATE_UNKNOWN"
 fi
 
 if [ "$num_warning" != "0" ] && [ `echo "$num_warning" | grep [^0-9]` ]; then
   echo "Warning value for number of files must be a number."
-  exit $STATE_UNKNOWN
+  exit "$STATE_UNKNOWN"
 fi
 
 if [ "$num_critical" != "0" ] && [ `echo "$num_critical" | grep [^0-9]` ]; then
   echo "Critical value for number of files must be a number."
-  exit $STATE_UNKNOWN
+  exit "$STATE_UNKNOWN"
 fi
 
 if [ ! `echo "$time_unit" | grep "seconds\|minutes\|hours\|days"` ]; then
   echo "Time unit must be one of: seconds, minutes, hours, days."
-  exit $STATE_UNKNOWN
+  exit "$STATE_UNKNOWN"
 fi
 
 if [ "$warning" -ge "$critical" ]; then
   echo "Critical time must be greater than warning time."
-  exit $STATE_UNKNOWN
+  exit "$STATE_UNKNOWN"
 fi
 
 if [ "$num_critical" -ge "$num_warning" ] && [ "$num_critical" != "0" ]; then
   echo "Critical number of files must be less than warning number of files."
-  exit $STATE_UNKNOWN
+  exit "$STATE_UNKNOWN"
 fi
 
 if [ "$verbose" != "" ] && [ "$summary" != "" ]; then
   echo "VERBOSE (-V) and SUMMARY (-s) can't be used together."
-  exit $STATE_UNKNOWN
+  exit "$STATE_UNKNOWN"
 fi
 
 case $time_unit
@@ -313,7 +314,7 @@ do
     # Cycle through files, looking for checkable files.
     for next_filepath in $file_list
     do
-      next_file=`basename $next_filepath`
+      next_file=`basename "$next_filepath"`
       # stat doesn't work the same on Linux/Solaris vs. FreeBSD/Darwin, so
       # make adjustments here.
       if [ "$OS_DISTRO" = "Linux" ] || [ "$OS_DISTRO" = "SunOS" ]; then
@@ -329,11 +330,11 @@ do
       if [ $FILE_AGE -gt $MAX_CRIT_AGE ]; then
         FILES_CRITICAL=$(($FILES_CRITICAL + 1))
         OUTPUT="$OUTPUT ${dir}/${next_file}: ${FILE_AGE_UNITS}${abbreviation}"
-        set_exit_status $STATE_CRITICAL
+        set_exit_status "$STATE_CRITICAL"
       elif [ $FILE_AGE -gt $MAX_WARN_AGE ]; then
         FILES_WARN=$(($FILES_WARN + 1))
         OUTPUT="$OUTPUT ${dir}/${next_file}: ${FILE_AGE_UNITS}${abbreviation}"
-        set_exit_status $STATE_WARNING
+        set_exit_status "$STATE_WARNING"
       else
         FILES_OK=$(($FILES_OK + 1))
         if [ "$verbose" == "1" ]; then
@@ -348,19 +349,19 @@ do
     fi
     # Check here to see if enough files got tested in the directory.
     if [ "$FILE_COUNT" -lt "$num_critical" ]; then
-      set_exit_status $STATE_CRITICAL
+      set_exit_status "$STATE_CRITICAL"
       OUTPUT="$OUTPUT ${dir}: Less than $num_critical files"
     elif [ "$FILE_COUNT" -lt "$num_warning" ]; then
-      set_exit_status $STATE_WARNING
+      set_exit_status "$STATE_WARNING"
       OUTPUT="$OUTPUT ${dir}: Less than $num_warning files"
     else
       OUTPUT="$OUTPUT ${dir}: $FILE_COUNT files"
     fi
   else
     if [ "$num_critical" ]; then
-      set_exit_status $STATE_CRITICAL
+      set_exit_status "$STATE_CRITICAL"
     elif [ "$num_warning" ]; then
-      set_exit_status $STATE_WARNING
+      set_exit_status "$STATE_WARNING"
     fi
     OUTPUT="$OUTPUT ${dir}: Does not exist"
   fi
@@ -390,5 +391,5 @@ if [ "$OUTPUT" ]; then
 fi
 
 echo "$exit_message"
-exit $exitstatus
+exit "$exitstatus"
 
